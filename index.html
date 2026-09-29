@@ -412,20 +412,39 @@ a { color: inherit; }
 .rev-msg { font-size: .88rem; color: var(--ink-2); min-height: 1.3em; margin: 0; }
 @media (max-width: 640px) { .rev-row { grid-template-columns: 1fr; } }
 
-.dev-credit { margin-top: 14px; font-size: .84rem; color: var(--ink-2); }
 .dev-credit a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .dev-credit a:hover { color: var(--accent); }
 
-.foot { padding: 56px clamp(20px, 5vw, 72px) 44px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr minmax(260px, 420px); gap: 40px; align-items: start; }
+.foot { padding: 56px clamp(20px, 5vw, 72px) 0; border-top: 1px solid var(--line); }
+.foot__grid { display: grid; grid-template-columns: minmax(200px, 1.2fr) minmax(120px, .6fr) minmax(260px, 1.3fr); gap: 40px; padding-bottom: 44px; }
+.foot__col { min-width: 0; }
 .foot .brand { font-size: 1.5rem; }
-.foot p { color: var(--ink-2); font-size: .9rem; margin-top: 12px; max-width: 46ch; }
-.news { display: flex; gap: 8px; }
+.foot p { color: var(--ink-2); font-size: .9rem; margin-top: 12px; max-width: 40ch; }
+.foot__heading { font: 300 1.3rem/1.2 var(--f-display); color: var(--ink); margin: 0 0 16px; }
+.foot__links { display: grid; gap: 12px; }
+.foot__links a, .foot__links button {
+  display: block; text-align: left; width: fit-content; border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-size: .92rem; color: var(--ink); text-decoration: none; transition: color .2s;
+}
+.foot__links a:hover, .foot__links button:hover { color: var(--accent); }
+.foot__social { display: flex; gap: 10px; margin-top: 18px; }
+.foot__social .ib { border: 1px solid var(--line); transition: color .2s, border-color .2s, background-color .2s; }
+.foot__social .ib:hover { color: var(--accent); border-color: var(--accent); }
+.foot__payments { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.pay-badge { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; font-size: .72rem; letter-spacing: .01em; color: var(--ink-2); background: var(--field); }
+.foot__bottom {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap;
+  padding: 22px 0; border-top: 1px solid var(--line);
+}
+.foot__bottom p { margin: 0; font-size: .8rem; color: var(--ink-2); max-width: none; }
+
+.news { display: flex; align-items: center; gap: 8px; }
 .news input {
   flex: 1; min-width: 0; height: 48px; border-radius: 999px; border: 1px solid var(--line); background: var(--field);
   padding: 0 20px; font: inherit; color: var(--ink);
 }
 .news input::placeholder { color: var(--ink-2); }
-.news .btn { height: 48px; }
+.news .btn { height: 48px; flex: none; }
 .news__msg { margin-top: 10px; font-size: .88rem; min-height: 1.4em; color: var(--ink-2); }
 
 /* ---------- bag drawer ---------- */
@@ -482,6 +501,16 @@ a { color: inherit; }
 .modal__card p { margin-top: 12px; color: var(--ink-2); }
 .modal__card .btn { margin-top: 24px; }
 
+/* info modal (FAQs / Policies) */
+.modal__card--info { position: relative; text-align: left; width: min(560px, 100%); max-height: min(80vh, 640px); overflow-y: auto; }
+.modal__card--info h2 { margin-top: 0; padding-right: 44px; font-size: 1.7rem; }
+.modal__x { position: absolute; top: 14px; right: 14px; }
+.modal__card .modal__x svg { width: 21px; height: 21px; stroke: currentColor; stroke-width: 1.5; }
+.modal__body { margin-top: 18px; }
+.modal__body h3 { font: 500 1rem/1.3 var(--f-ui); margin: 20px 0 0; }
+.modal__body h3:first-child { margin-top: 0; }
+.modal__body p { margin-top: 6px; color: var(--ink-2); font-size: .94rem; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
   .stage { grid-template-columns: minmax(0, 1fr) 360px; }
@@ -497,7 +526,8 @@ a { color: inherit; }
   .rail { justify-content: flex-start; padding-left: 20px; padding-right: 20px; }
   .panel { border-left: 0; border-top: 1px solid var(--line); padding-top: 28px; }
   .toolbar { bottom: 10px; gap: 6px; }
-  .foot { grid-template-columns: 1fr; }
+  .foot__grid { grid-template-columns: 1fr; gap: 32px; }
+  .foot__bottom { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 520px) {
   .viewer__hint { top: 12px; font-size: .8rem; }
@@ -713,18 +743,53 @@ a { color: inherit; }
 </main>
 
 <footer class="foot">
-  <div>
-    <a class="brand" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg><span>Jewelix</span></a>
-    <p>Jewelix is a concept store. Checkout is simulated and no payment is taken.</p>
-    <p class="dev-credit">Website developed by <strong>Mehreen Riaz</strong> — <a href="https://www.linkedin.com/in/mehreen-riaz-1a6343393" target="_blank" rel="noopener">LinkedIn</a> · <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a></p>
+  <div class="foot__grid">
+    <div class="foot__col foot__brand">
+      <a class="brand" href="#top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-gem"/></svg><span>Jewelix</span></a>
+      <p>Jewelix is a concept store. Checkout is simulated and no payment is taken.</p>
+      <div class="foot__social" aria-label="Social links (demo only, do not navigate anywhere)">
+        <a href="#" class="ib" data-social title="Instagram (demo)" aria-label="Instagram (demo)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="4"/><circle cx="12" cy="13" r="3.6"/><circle cx="16.5" cy="9.5" r=".6" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="#" class="ib" data-social title="Pinterest (demo)" aria-label="Pinterest (demo)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-6 6.5-11A6.5 6.5 0 0 0 5.5 10c0 5 6.5 11 6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>
+        </a>
+        <a href="#" class="ib" data-social title="Community (demo)" aria-label="Community (demo)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5Z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="foot__col">
+      <h3 class="foot__heading">Quick links</h3>
+      <nav class="foot__links" aria-label="Footer">
+        <a href="#collection">Shop</a>
+        <a href="mailto:hello@jewelix.example">Contact</a>
+        <button type="button" data-info="faq">FAQs</button>
+        <button type="button" data-info="policies">Policies</button>
+      </nav>
+    </div>
+
+    <div class="foot__col">
+      <h3 class="foot__heading">Stay in touch</h3>
+      <form class="news" id="newsForm" novalidate>
+        <label class="sr-only" for="newsEmail">Email address</label>
+        <input id="newsEmail" type="email" placeholder="Email address" autocomplete="email" required>
+        <button class="btn btn--accent" type="submit">Subscribe</button>
+      </form>
+      <p class="news__msg" id="newsMsg" role="status"></p>
+      <div class="foot__payments" aria-label="Payment methods shown for demonstration only, no real payment is processed">
+        <span class="pay-badge">VISA</span>
+        <span class="pay-badge">Mastercard</span>
+        <span class="pay-badge">PayPal</span>
+        <span class="pay-badge">Apple Pay</span>
+      </div>
+    </div>
   </div>
-  <div>
-    <form class="news" id="newsForm" novalidate>
-      <label class="sr-only" for="newsEmail">Email address</label>
-      <input id="newsEmail" type="email" placeholder="Email address" autocomplete="email" required>
-      <button class="btn" type="submit">Subscribe</button>
-    </form>
-    <p class="news__msg" id="newsMsg" role="status"></p>
+
+  <div class="foot__bottom">
+    <p>© 2026 Jewelix. Concept store — for demonstration only.</p>
+    <p class="dev-credit">Developed by <strong>Mehreen Riaz</strong> — <a href="https://www.linkedin.com/in/mehreen-riaz-1a6343393" target="_blank" rel="noopener">LinkedIn</a> · <a href="mailto:mehreenriaz1532@gmail.com">mehreenriaz1532@gmail.com</a></p>
   </div>
 </footer>
 
@@ -768,6 +833,16 @@ a { color: inherit; }
     <h2 id="modalTitle">Order placed</h2>
     <p id="modalText"></p>
     <button class="btn btn--accent" id="modalClose" type="button">Keep browsing</button>
+  </div>
+</div>
+
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle" aria-hidden="true">
+  <div class="modal__card modal__card--info">
+    <button class="ib modal__x" id="infoModalClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <h2 id="infoModalTitle"></h2>
+    <div class="modal__body" id="infoModalBody"></div>
   </div>
 </div>
 <script>
@@ -1910,7 +1985,7 @@ const state = {
 
 let renderer, scene, camera, pmrem, envRaw, envRT, materials, flareMat, shadowMesh;
 let curBuild = null, flares = [], thumbs = {};
-let lastT = 0;
+let lastT = 0, viewerVisible = true;
 /* guarded: THREE may not have loaded (e.g. CDN unreachable) — boot() checks
    for this and routes to the fallback UI, but these module-scope statements
    run immediately at script-parse time, before boot() gets a chance to */
@@ -1941,6 +2016,8 @@ function boot() {
   initUI();
   attachToolbar();
   attachPointer($('#gl'));
+  /* don't keep rendering WebGL while the viewer is scrolled out of view */
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { viewerVisible = es[0].isIntersecting; }, { threshold: 0 }).observe($('#viewer'));
   window.addEventListener('resize', resize);
   resize();
   $('#loader').classList.add('is-done');
@@ -2323,6 +2400,7 @@ function resize() {
    ================================================================ */
 function loop(t) {
   requestAnimationFrame(loop);
+  if (!viewerVisible) { lastT = t; return; }
   const dt = Math.min(0.1, (t - lastT) / 1000 || 0.016); lastT = t;
   if (materials) stepVariant(materials, 1 - Math.exp(-dt / 0.18));
   if (state.auto && !state.dragging) { camTarget.theta += dt * 0.26; camState.theta += dt * 0.26; }
@@ -2427,11 +2505,48 @@ function renderCart() {
 /* ================================================================
    Drawer / modal / forms / theme
    ================================================================ */
-let lastFocus = null;
+let lastFocus = null, infoFocus = null;
+const anyOverlayOpen = () => ['#drawer', '#modal', '#infoModal'].some(s => $(s).classList.contains('is-open'));
 function openDrawer() { lastFocus = document.activeElement; $('#scrim').classList.add('is-open'); $('#drawer').classList.add('is-open'); $('#drawer').setAttribute('aria-hidden', 'false'); document.body.classList.add('is-locked'); $('#drawerClose').focus(); }
-function closeDrawer() { $('#scrim').classList.remove('is-open'); $('#drawer').classList.remove('is-open'); $('#drawer').setAttribute('aria-hidden', 'true'); if (!$('#modal').classList.contains('is-open')) document.body.classList.remove('is-locked'); if (lastFocus) lastFocus.focus(); }
+function closeDrawer() { $('#scrim').classList.remove('is-open'); $('#drawer').classList.remove('is-open'); $('#drawer').setAttribute('aria-hidden', 'true'); if (!anyOverlayOpen()) document.body.classList.remove('is-locked'); if (lastFocus) lastFocus.focus(); }
 function openModal() { $('#modal').classList.add('is-open'); $('#modal').setAttribute('aria-hidden', 'false'); document.body.classList.add('is-locked'); $('#modalClose').focus(); }
-function closeModal() { $('#modal').classList.remove('is-open'); $('#modal').setAttribute('aria-hidden', 'true'); if (!$('#drawer').classList.contains('is-open')) document.body.classList.remove('is-locked'); }
+function closeModal() { $('#modal').classList.remove('is-open'); $('#modal').setAttribute('aria-hidden', 'true'); if (!anyOverlayOpen()) document.body.classList.remove('is-locked'); }
+
+/* footer quick links: FAQs and Policies open one shared info dialog */
+const INFO = {
+  faq: { title: 'Frequently asked questions', items: [
+    ['Is Jewelix a real store?', 'No. Jewelix is a concept store built to show off interactive 3D jewelry. Checkout is simulated, no payment is taken, and nothing ships.'],
+    ['Can I really change the metal and gemstone?', 'Yes. Pick any of the four metals and five gemstones and the 3D piece updates live, with the price recalculating as you go.'],
+    ['How do the 3D previews work?', 'Every piece is built and lit in your browser, so you can rotate it, zoom in, switch the lighting, and jump between front, side, top, and detail views.'],
+    ['What does the JEWELIX10 code do?', 'Enter it in your bag for 10% off. Free insured shipping applies once your total reaches $2,000.'],
+    ['How do I leave a review?', 'Scroll to the reviews section near the bottom of the page and choose the piece you are reviewing. Only the three most recent reviews are shown, so yours replaces the oldest.']
+  ] },
+  policies: { title: 'Policies', items: [
+    ['Shipping', 'Insured shipping is free on orders of $2,000 or more and $45 below that. Since this is a concept store, nothing is actually shipped.'],
+    ['Returns and resizing', 'The site describes free returns within 30 days and free resizing within 60 days, as a real jeweler might. No returns are processed here.'],
+    ['Materials', 'The metals and gemstones shown are illustrative. Every piece is generated in your browser rather than photographed or manufactured.'],
+    ['Your data', 'Your bag, theme choice, and reviews are stored only in this browser\u2019s local storage. Nothing is sent to a server.']
+  ] }
+};
+function openInfo(key) {
+  const info = INFO[key]; if (!info) return;
+  infoFocus = document.activeElement;
+  $('#infoModalTitle').textContent = info.title;
+  const body = $('#infoModalBody'); body.innerHTML = '';
+  info.items.forEach(([h, p]) => {
+    const h3 = document.createElement('h3'); h3.textContent = h;
+    const para = document.createElement('p'); para.textContent = p;
+    body.append(h3, para);
+  });
+  $('#infoModal').classList.add('is-open'); $('#infoModal').setAttribute('aria-hidden', 'false');
+  document.body.classList.add('is-locked');
+  $('#infoModalClose').focus();
+}
+function closeInfo() {
+  $('#infoModal').classList.remove('is-open'); $('#infoModal').setAttribute('aria-hidden', 'true');
+  if (!anyOverlayOpen()) document.body.classList.remove('is-locked');
+  if (infoFocus) { infoFocus.focus(); infoFocus = null; }
+}
 
 function attachCartAndForms() {
   $('#btnAdd').addEventListener('click', addToCart);
@@ -2440,7 +2555,16 @@ function attachCartAndForms() {
   $('#scrim').addEventListener('click', () => { closeDrawer(); closeModal(); });
   $('#emptyBrowse').addEventListener('click', () => { closeDrawer(); $('#collection').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); });
   $('#modalClose').addEventListener('click', closeModal);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeModal(); } });
+  $$('[data-info]').forEach(b => b.addEventListener('click', () => openInfo(b.dataset.info)));
+  $('#infoModalClose').addEventListener('click', closeInfo);
+  $('#infoModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeInfo(); });
+  $$('[data-social]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('#infoModal').classList.contains('is-open')) closeInfo();
+    else if ($('#modal').classList.contains('is-open')) closeModal();
+    else if ($('#drawer').classList.contains('is-open')) closeDrawer();
+  });
 
   $('#promoForm').addEventListener('submit', e => {
     e.preventDefault();
